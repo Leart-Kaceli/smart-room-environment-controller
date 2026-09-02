@@ -1,8 +1,11 @@
 const int tempSensorPin = A0;
 const int lightSensorPin = A1;
+const int lightThreshold = 260;
+const int LEDPin = 8;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(LEDPin, OUTPUT);
 }
 
 void loop() {
@@ -21,6 +24,10 @@ void loop() {
 
   Serial.print("Light Level: ");
   Serial.println(lightSensorValue);
+
+  bool roomIsDark = (lightSensorValue < lightThreshold);
+  digitalWrite(LEDPin, roomIsDark ? HIGH : LOW);
+  Serial.println(roomIsDark ? "Room Light: ON" : "Room Light: OFF");
 
   delay(500);
 }
