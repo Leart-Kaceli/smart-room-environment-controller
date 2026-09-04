@@ -1,3 +1,8 @@
+#include  <LiquidCrystal.h>
+
+
+LiquidCrystal lcd(7, 9, 2, 3, 4, 5);
+
 // Pin Assignments
 const int tempSensorPin = A0;
 const int lightSensorPin = A1;
@@ -14,10 +19,22 @@ float tempF;
 bool roomIsDark;
 bool roomIsHot;
 
+// LCD screen-cycling variables
+const unsigned long screenInterval = 2000;  // time each screen is shown (ms)
+unsigned long lastScreenChange = 0;
+int currentScreen = 0;  // 0 = Temp/Light Level, 1 = Fan/Light Status
+
 void setup() {
+  lcd.begin(16,2);
   Serial.begin(9600);
   pinMode(LEDPin, OUTPUT);
   pinMode(motorPin, OUTPUT);
+
+  lcd.print("Smart Room");
+  lcd.setCursor(0,1);
+  lcd.print("Controller");
+  delay(2000);
+  lcd.clear();
 }
 
 void loop() {
@@ -25,6 +42,7 @@ void loop() {
   controlLighting();
   controlFan();
   printStatus();
+  updateLCD();
 
   delay(500);
 }
@@ -61,7 +79,7 @@ void controlFan(){
   digitalWrite(motorPin, roomIsHot ? HIGH : LOW);
 }
 
-// Status Reporting
+// Status Reporting (Serial Monitor)
 void printStatus(){
   Serial.print("Temperature in Fahrenheit: ");
   Serial.println(tempF);
@@ -72,4 +90,45 @@ void printStatus(){
   Serial.println(roomIsDark ? "Room Light: ON" : "Room Light: OFF");
   Serial.println(roomIsHot ? "Fan: ON" : "Fan: OFF");
   Serial.println();
+}
+
+// Status Reporting (LCD)
+void updateLCD(){
+// Check if it's time to switch to the next screen
+  unsigned long currentTime = millis();
+  if (currentTime - lastScreenChange >= screenInterval) {
+    currentScreen = (currentScreen + 1) % 2;  // toggle between screen 0 and 1
+    lastScreenChange = currentTime;
+    lcd.clear(); 
+  }
+
+  if (currentScreen == 0) {
+    showTempAndLightScreen();
+  } else {
+    showFanAndLightStatusScreen();
+  }
+}
+
+// LCD Screen 0: Temperature + Light Level
+void showTempAndLightScreen() {
+  lcd.setCursor(0, 0);
+  lcd.print("Temp: ");
+  lcd.print(tempF, 1);   // 1 decimal place
+  lcd.print("F   ");     // trailing spaces clear leftover digits
+
+  lcd.setCursor(0, 1);
+  lcd.print("Light Lvl: ");
+  lcd.print(lightSensorValue);
+  lcd.print("   ");      // trailing spaces clear leftover digits
+}
+
+// LCD Screen 1: Fan + Light Status
+void showFanAndLightStatusScreen() {
+  lcd.setCursor(0, 0);
+  lcd.print("Fan:  ");
+  lcd.print(roomIsHot ? "ON " : "OFF");
+
+  lcd.setCursor(0, 1);
+  lcd.print("Light:");
+  lcd.print(roomIsDark ? "ON " : "OFF");
 }
