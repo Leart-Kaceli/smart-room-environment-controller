@@ -11,7 +11,7 @@ const int motorPin = 6;
 
 // Thresholds
 const int lightThreshold = 260;
-const float fanThresholdF = 65.0;
+const float fanThresholdF = 75.0;
 
 // Global Sensor Variables
 int lightSensorValue;
