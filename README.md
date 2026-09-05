@@ -301,15 +301,15 @@ The sensors, automatic lighting, cooling fan, LCD, and software were combined in
 
 ### Initial Prototype
 
-![Initial Smart Room Prototype](images/prototype-v0.1.jpg)
+![Initial Smart Room Prototype](images/prototype-v0.1.jpg.jpeg)
 
 ### Intermediate Prototype
 
-![Intermediate Smart Room Prototype](images/prototype-v0.4.jpg)
+![Intermediate Smart Room Prototype](images/prototype-v0.4.jpg.jpeg)
 
 ### Final Build
 
-![Final Smart Room Build](images/final-build.jpg)
+![Final Smart Room Build](images/final-build.jpg.jpeg)
 
 ---
 
